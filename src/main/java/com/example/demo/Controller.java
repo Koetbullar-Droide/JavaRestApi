@@ -1,5 +1,6 @@
 package com.example.demo;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,10 +20,14 @@ public class Controller {
 
     
     @GetMapping("/data")
-    public List<Service> data() {
+    public List<Service> data(@RequestParam(name = "id", required = false) Integer id) {
 
-        return source.getAllData();
-        
+        if (id != null) {
+            return source.getServiceById(id).map(List::of).orElse(List.of());
+            
+        } else {
+            return source.getAllData();
+        }
 	}
 
     
