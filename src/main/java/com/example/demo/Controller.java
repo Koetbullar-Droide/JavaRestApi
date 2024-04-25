@@ -2,35 +2,35 @@ package com.example.demo;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.demo.entity.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
-import com.example.demo.Models.Service;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
 public class Controller {
-
-    private DataService source;
-
-    public Controller() {
-        this.source = new DataService();
-    }
+    @Autowired
+    private UserRepository userRepository;
 
     
-    @GetMapping("/data")
-    public List<Service> data(@RequestParam(name = "id", required = false) Integer id) {
-        return source.getAllData();
+    @PostMapping("/add")
+    public @ResponseBody String addNewUser(@RequestParam String name, @RequestParam(name = "email", required = false) String email) {
+
+        User n = new User();
+        n.setName(name);
+        n.setEmail(email);
+        userRepository.save(n);
+        return "saved";
+
         
 	}
 
-    @GetMapping("/data/{id}")
-    public Optional<Service> dataById(@PathVariable("id") Integer id) {
-        return source.getServiceById(id);
+    @GetMapping("/all")
+    public @ResponseBody Iterable<User> getAllUsers() {
+        return userRepository.findAll();
+
 	}
 
     
